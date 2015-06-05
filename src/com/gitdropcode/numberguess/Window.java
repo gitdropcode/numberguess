@@ -114,6 +114,7 @@ public class Window extends JFrame
 		logArea.setFocusable(false);
 		Font logFont = logArea.getFont();
 		logArea.setFont(logFont.deriveFont(Font.PLAIN, 24.0f));
+		logArea.setOpaque(false);
 		
 		logScroll = new JScrollPane(logArea);
 		logScroll.setPreferredSize(new Dimension(400, 300));
