@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
@@ -48,6 +50,7 @@ public class Window extends JFrame
 	public Window()
 	{
 		addComponents();
+		addButtonFunctionality();
 		
 		getContentPane().setPreferredSize(new Dimension(800, 600));
 		pack();
@@ -62,7 +65,7 @@ public class Window extends JFrame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
-	
+
 	private void addComponents()
 	{
 		timerLab = new JLabel("TIMER");
@@ -110,6 +113,8 @@ public class Window extends JFrame
 		entry.add(Box.createHorizontalGlue());
 		
 		logArea = new JTextArea("log");
+		logArea.setLineWrap(true);
+		logArea.setWrapStyleWord(true);
 		logArea.setEditable(false);
 		logArea.setFocusable(false);
 		Font logFont = logArea.getFont();
@@ -139,6 +144,18 @@ public class Window extends JFrame
 		button.setMaximumSize(new Dimension(200, 60));
 		button.setPreferredSize(new Dimension(200, 60));
 		buttonPane.add(button);
+	}
+	
+	private void addButtonFunctionality()
+	{
+		instButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				new Instructions();
+			}
+		});
 	}
 
 	public static void main(String[] args)
