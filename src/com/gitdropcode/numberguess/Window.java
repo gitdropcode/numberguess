@@ -7,6 +7,10 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -19,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 public class Window extends JFrame
 {
@@ -27,39 +32,52 @@ public class Window extends JFrame
 	/*
 	 * LAYOUT:
 	 * 
-	 *     timer    | buttonPane
-	 *  ------------------------
-	 *     entry    |    log
+	 * timer | buttonPane ------------------------ entry | log
 	 */
 	private JPanel timer;
 	private JLabel timerLab;
-	
+
 	private JPanel buttonPane;
 	private JButton startButton;
 	private JButton enterButton;
 	private JButton ansButton;
 	private JButton instButton;
-	
+
 	private JPanel entry;
 	private JTextField entryField;
-	
+
 	private JPanel log;
 	private JScrollPane logScroll;
 	private JTextArea logArea;
-	
+
+	private boolean running = false;
+	private Random random = new Random();
+	private String num;
+	private int secs;
+	private int guesses;
+	private Timer update = new Timer(1000, new ActionListener()
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			secs++;
+			updateTimer();
+		}
+	});
+
 	public Window()
 	{
 		addComponents();
 		addButtonFunctionality();
-		
+
 		getContentPane().setPreferredSize(new Dimension(800, 600));
 		pack();
 		setLocationRelativeTo(null);
-		
+
 		URL iconURL = getClass().getResource("/icon.png");
 		ImageIcon icon = new ImageIcon(iconURL);
 		setIconImage(icon.getImage());
-		
+
 		setTitle("Guess a Number");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,22 +86,22 @@ public class Window extends JFrame
 
 	private void addComponents()
 	{
-		timerLab = new JLabel("TIMER");
+		timerLab = new JLabel();
 		Font timerFont = timerLab.getFont();
 		timerLab.setFont(timerFont.deriveFont(Font.PLAIN, 96.0f));
-		
+
 		timer = new JPanel();
 		BoxLayout timerLayout = new BoxLayout(timer, BoxLayout.X_AXIS);
 		timer.setLayout(timerLayout);
 		timer.add(Box.createHorizontalGlue());
 		timer.add(timerLab);
 		timer.add(Box.createHorizontalGlue());
-		
+
 		startButton = new JButton("Start Game");
 		enterButton = new JButton("Enter");
 		ansButton = new JButton("Show Answer");
 		instButton = new JButton("Instructions");
-		
+
 		buttonPane = new JPanel();
 		BoxLayout buttonLayout = new BoxLayout(buttonPane, BoxLayout.Y_AXIS);
 		buttonPane.setLayout(buttonLayout);
@@ -96,7 +114,7 @@ public class Window extends JFrame
 		buttonPane.add(Box.createVerticalGlue());
 		addAButton(instButton);
 		buttonPane.add(Box.createVerticalGlue());
-		
+
 		entryField = new JTextField();
 		entryField.setHorizontalAlignment(JTextField.CENTER);
 		Font entryFont = entryField.getFont();
@@ -104,15 +122,15 @@ public class Window extends JFrame
 		entryField.setMinimumSize(new Dimension(350, 200));
 		entryField.setPreferredSize(new Dimension(350, 200));
 		entryField.setMaximumSize(new Dimension(350, 200));
-		
+
 		entry = new JPanel();
 		BoxLayout entryLayout = new BoxLayout(entry, BoxLayout.X_AXIS);
 		entry.setLayout(entryLayout);
 		entry.add(Box.createHorizontalGlue());
 		entry.add(entryField);
 		entry.add(Box.createHorizontalGlue());
-		
-		logArea = new JTextArea("log");
+
+		logArea = new JTextArea();
 		logArea.setLineWrap(true);
 		logArea.setWrapStyleWord(true);
 		logArea.setEditable(false);
@@ -120,21 +138,21 @@ public class Window extends JFrame
 		Font logFont = logArea.getFont();
 		logArea.setFont(logFont.deriveFont(Font.PLAIN, 24.0f));
 		logArea.setOpaque(false);
-		
+
 		logScroll = new JScrollPane(logArea);
 		logScroll.setPreferredSize(new Dimension(400, 300));
 		logScroll.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-		
+
 		log = new JPanel();
 		log.add(logScroll);
-		
+
 		setLayout(new GridLayout(2, 2));
 		add(timer);
 		add(buttonPane);
 		add(entry);
 		add(log);
 	}
-	
+
 	private void addAButton(JButton button)
 	{
 		button.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -145,9 +163,33 @@ public class Window extends JFrame
 		button.setPreferredSize(new Dimension(200, 60));
 		buttonPane.add(button);
 	}
-	
+
 	private void addButtonFunctionality()
 	{
+		startButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				startGame();
+			}
+		});
+		enterButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				guess();
+			}
+		});
+		ansButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				giveUp();
+			}
+		});
 		instButton.addActionListener(new ActionListener()
 		{
 			@Override
@@ -156,6 +198,72 @@ public class Window extends JFrame
 				new Instructions();
 			}
 		});
+	}
+
+	private void startGame()
+	{
+		running = true;
+		secs = 0;
+		guesses = 0;
+		
+		StringBuilder nums = new StringBuilder();
+		List<String> digits = new ArrayList<String>(Arrays.asList("0", "1",
+				"2", "3", "4", "5", "6", "7", "8", "9"));
+
+		nums.append(digits.remove(random.nextInt(9) + 1));
+		for (int i = 0; i < 4; i++)
+		{
+			nums.append(digits.remove(random.nextInt(digits.size())));
+		}
+
+		num = nums.toString();
+
+		updateTimer();
+		update.start();
+	}
+
+	private void endGame()
+	{
+		running = false;
+		update.stop();
+	}
+
+	private void guess()
+	{
+		if (!running)
+		{
+			return;
+		}
+		String g = entryField.getText();
+		entryField.setText("");
+		guesses++;
+		if (g == num)
+		{
+			// congrats
+			endGame();
+			return;
+		}
+		logArea.setText("Guess " + guesses + ": " + g + "\n" + logArea.getText());
+		logArea.setCaretPosition(0);
+		if (guesses >= 20)
+		{
+			// too many guesses
+			endGame();
+			return;
+		}
+	}
+
+	private void giveUp()
+	{
+		endGame();
+		entryField.setText(num);
+	}
+
+	private void updateTimer()
+	{
+		int seconds = secs % 60;
+		int minutes = secs / 60;
+		timerLab.setText(String.format("%d:%02d", minutes, seconds));
 	}
 
 	public static void main(String[] args)
