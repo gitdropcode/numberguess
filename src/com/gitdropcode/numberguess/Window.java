@@ -151,6 +151,10 @@ public class Window extends JFrame
 		add(buttonPane);
 		add(entry);
 		add(log);
+		
+		entryField.setEnabled(false);
+		enterButton.setEnabled(false);
+		ansButton.setEnabled(false);
 	}
 
 	private void addAButton(JButton button)
@@ -205,7 +209,7 @@ public class Window extends JFrame
 		running = true;
 		secs = 0;
 		guesses = 0;
-		
+
 		StringBuilder nums = new StringBuilder();
 		List<String> digits = new ArrayList<String>(Arrays.asList("0", "1",
 				"2", "3", "4", "5", "6", "7", "8", "9"));
@@ -218,6 +222,12 @@ public class Window extends JFrame
 
 		num = nums.toString();
 
+		entryField.setEnabled(true);
+		entryField.setText("");
+		logArea.setText("");
+		enterButton.setEnabled(true);
+		ansButton.setEnabled(true);
+		
 		updateTimer();
 		update.start();
 	}
@@ -226,6 +236,9 @@ public class Window extends JFrame
 	{
 		running = false;
 		update.stop();
+		entryField.setEnabled(false);
+		enterButton.setEnabled(false);
+		ansButton.setEnabled(false);
 	}
 
 	private void guess()
@@ -235,21 +248,54 @@ public class Window extends JFrame
 			return;
 		}
 		String g = entryField.getText();
-		entryField.setText("");
-		guesses++;
-		if (g == num)
+		if (g.length() == 5)
 		{
-			// congrats
-			endGame();
-			return;
+			entryField.setText("");
+			guesses++;
+
+			ArrayList<Character> nlist = new ArrayList<Character>();
+			for (char c : num.toCharArray())
+			{
+				nlist.add(c);
+			}
+
+			int a = 0;
+			int b = 0;
+
+			for (int i = 0; i < 5; i++)
+			{
+				if (nlist.get(i) == g.charAt(i))
+				{
+					a++;
+				}
+				else if (nlist.contains(g.charAt(i)))
+				{
+					b++;
+				}
+			}
+
+			logArea.setText("Guess " + guesses + ": " + g + "\n" + a
+					+ "As and " + b + "Bs\n\n" + logArea.getText());
+			logArea.setCaretPosition(0);
+			if (g.equals(num))
+			{
+				new DialogBox("Congratulations! You guessed the number!",
+						"Congratulations", new Dimension(400, 200));
+				endGame();
+				return;
+			}
+			if (guesses >= 20)
+			{
+				new DialogBox("You used up your 20 guesses.", "Game Over",
+						new Dimension(400, 200));
+				endGame();
+				return;
+			}
 		}
-		logArea.setText("Guess " + guesses + ": " + g + "\n" + logArea.getText());
-		logArea.setCaretPosition(0);
-		if (guesses >= 20)
+		else
 		{
-			// too many guesses
-			endGame();
-			return;
+			new DialogBox("Your guess must be 5 digits.", "Invalid",
+					new Dimension(400, 200));
 		}
 	}
 
