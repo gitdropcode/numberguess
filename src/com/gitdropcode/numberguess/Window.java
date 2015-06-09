@@ -17,6 +17,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -34,8 +35,9 @@ public class Window extends JFrame
 	 * 
 	 * timer | buttonPane ------------------------ entry | log
 	 */
-	private JPanel timer;
-	private JLabel timerLab;
+	private JPanel stats;
+	private JLabel timer;
+	private JLabel guessLab;
 
 	private JPanel buttonPane;
 	private JButton startButton;
@@ -86,16 +88,24 @@ public class Window extends JFrame
 
 	private void addComponents()
 	{
-		timerLab = new JLabel();
-		Font timerFont = timerLab.getFont();
-		timerLab.setFont(timerFont.deriveFont(Font.PLAIN, 96.0f));
+		timer = new JLabel(" ");
+		Font timerFont = timer.getFont();
+		timer.setFont(timerFont.deriveFont(Font.PLAIN, 96.0f));
+		timer.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+		
+		guessLab = new JLabel(" ");
+		Font guessFont = guessLab.getFont();
+		guessLab.setFont(guessFont.deriveFont(Font.PLAIN, 24.0f));
+	    guessLab.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
-		timer = new JPanel();
-		BoxLayout timerLayout = new BoxLayout(timer, BoxLayout.X_AXIS);
-		timer.setLayout(timerLayout);
-		timer.add(Box.createHorizontalGlue());
-		timer.add(timerLab);
-		timer.add(Box.createHorizontalGlue());
+		stats = new JPanel();
+		BoxLayout timerLayout = new BoxLayout(stats, BoxLayout.Y_AXIS);
+		stats.setLayout(timerLayout);
+		stats.add(Box.createVerticalGlue());
+		stats.add(timer);
+		stats.add(Box.createVerticalGlue());
+		stats.add(guessLab);
+		stats.add(Box.createVerticalGlue());
 
 		startButton = new JButton("Start Game");
 		enterButton = new JButton("Enter");
@@ -147,7 +157,7 @@ public class Window extends JFrame
 		log.add(logScroll);
 
 		setLayout(new GridLayout(2, 2));
-		add(timer);
+		add(stats);
 		add(buttonPane);
 		add(entry);
 		add(log);
@@ -225,6 +235,7 @@ public class Window extends JFrame
 		entryField.setEnabled(true);
 		entryField.setText("");
 		logArea.setText("");
+		guessLab.setText("Number of Guesses: 0");
 		enterButton.setEnabled(true);
 		ansButton.setEnabled(true);
 
@@ -278,6 +289,7 @@ public class Window extends JFrame
 					+ " digit scored A and " + b + " digit scored B\n\n"
 					+ logArea.getText());
 			logArea.setCaretPosition(0);
+			guessLab.setText("Number of Guesses: " + guesses);
 			if (g.equals(num))
 			{
 				new DialogBox("Congratulations! You guessed the number!",
@@ -310,7 +322,7 @@ public class Window extends JFrame
 	{
 		int seconds = secs % 60;
 		int minutes = secs / 60;
-		timerLab.setText(String.format("%d:%02d", minutes, seconds));
+		timer.setText(String.format("%d:%02d", minutes, seconds));
 	}
 
 	public static void main(String[] args)
