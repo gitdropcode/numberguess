@@ -151,7 +151,7 @@ public class Window extends JFrame
 		add(buttonPane);
 		add(entry);
 		add(log);
-		
+
 		entryField.setEnabled(false);
 		enterButton.setEnabled(false);
 		ansButton.setEnabled(false);
@@ -227,7 +227,7 @@ public class Window extends JFrame
 		logArea.setText("");
 		enterButton.setEnabled(true);
 		ansButton.setEnabled(true);
-		
+
 		updateTimer();
 		update.start();
 	}
@@ -275,7 +275,8 @@ public class Window extends JFrame
 			}
 
 			logArea.setText("Guess " + guesses + ": " + g + "\n" + a
-					+ "As and " + b + "Bs\n\n" + logArea.getText());
+					+ " digit scored A and " + b + " digit scored B\n\n"
+					+ logArea.getText());
 			logArea.setCaretPosition(0);
 			if (g.equals(num))
 			{
