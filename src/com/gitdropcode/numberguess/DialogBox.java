@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
 
@@ -26,11 +27,13 @@ public class DialogBox extends JFrame
 	private JTextArea textarea;
 	private JPanel bottom;
 	private JButton button;
+	private Window parent;
 
-	public DialogBox(String s, String title, Dimension size)
+	public DialogBox(String s, String title, Dimension size, Window parent)
 	{
 		this.size = size;
 		this.s = s;
+		this.parent = parent;
 		
 		addComponents();
 
@@ -41,6 +44,13 @@ public class DialogBox extends JFrame
 			{
 				dispatchEvent(new WindowEvent(DialogBox.this,
 						WindowEvent.WINDOW_CLOSING));
+			}
+		});
+		addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosed(WindowEvent e)
+			{
+				DialogBox.this.parent.dialogClosed();
 			}
 		});
 

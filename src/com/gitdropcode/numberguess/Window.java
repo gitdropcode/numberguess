@@ -30,12 +30,7 @@ import javax.swing.text.AbstractDocument;
 public class Window extends JFrame
 {
 	private static final long serialVersionUID = 1L;
-
-	/*
-	 * LAYOUT:
-	 * 
-	 * timer | buttonPane ------------------------ entry | log
-	 */
+	
 	private JPanel stats;
 	private JLabel timer;
 	private JLabel guessLab;
@@ -212,7 +207,7 @@ public class Window extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				new Instructions();
+				new Instructions(Window.this);
 			}
 		});
 	}
@@ -297,14 +292,14 @@ public class Window extends JFrame
 			if (g.equals(num))
 			{
 				new DialogBox("Congratulations! You guessed the number!",
-						"Congratulations", new Dimension(400, 200));
+						"Congratulations", new Dimension(400, 200), this);
 				endGame();
 				return;
 			}
 			if (guesses >= 20)
 			{
 				new DialogBox("You used up your 20 guesses.", "Game Over",
-						new Dimension(400, 200));
+						new Dimension(400, 200), this);
 				endGame();
 				return;
 			}
@@ -313,7 +308,7 @@ public class Window extends JFrame
 		else
 		{
 			new DialogBox("Your guess must be 5 digits.", "Invalid",
-					new Dimension(400, 200));
+					new Dimension(400, 200), this);
 		}
 	}
 
@@ -328,6 +323,14 @@ public class Window extends JFrame
 		int seconds = secs % 60;
 		int minutes = secs / 60;
 		timer.setText(String.format("%d:%02d", minutes, seconds));
+	}
+	
+	void dialogClosed()
+	{
+		if (entryField.isEnabled())
+		{
+			entryField.requestFocus();
+		}
 	}
 
 	public static void main(String[] args)

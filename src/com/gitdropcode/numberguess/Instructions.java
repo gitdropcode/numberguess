@@ -6,10 +6,10 @@ public class Instructions extends DialogBox
 {
 	private static final long serialVersionUID = 1L;
 
-	public Instructions()
+	public Instructions(Window parent)
 	{
 		super(getText(), "Guess A Number - Instructions", new Dimension(800,
-				600));
+				600), parent);
 	}
 
 	private static String getText()
