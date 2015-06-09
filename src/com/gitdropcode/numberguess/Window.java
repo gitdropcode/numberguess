@@ -32,7 +32,7 @@ import javax.swing.text.AbstractDocument;
 public class Window extends JFrame
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	private JPanel stats;
 	private JLabel timer;
 	private JLabel guessLab;
@@ -165,7 +165,7 @@ public class Window extends JFrame
 		entryField.setEnabled(false);
 		enterButton.setEnabled(false);
 		ansButton.setEnabled(false);
-		
+
 		entryField.addKeyListener(new KeyAdapter()
 		{
 			@Override
@@ -298,9 +298,19 @@ public class Window extends JFrame
 				}
 			}
 
-			logArea.setText("Guess " + guesses + ": " + g + "\n" + a
-					+ " digit scored A and " + b + " digit scored B\n\n"
-					+ logArea.getText());
+			String aword = "digits";
+			String bword = "digits";
+			if (a == 1)
+			{
+				aword = "digit";
+			}
+			if (b == 1)
+			{
+				aword = "digit";
+			}
+			logArea.setText("Guess " + guesses + ": " + g + "\n" + a + " "
+					+ aword + " scored A and " + b + " " + bword
+					+ " scored B\n\n" + logArea.getText());
 			logArea.setCaretPosition(0);
 			guessLab.setText("Number of Guesses: " + guesses);
 			if (g.equals(num))
@@ -338,7 +348,7 @@ public class Window extends JFrame
 		int minutes = secs / 60;
 		timer.setText(String.format("%d:%02d", minutes, seconds));
 	}
-	
+
 	void dialogClosed()
 	{
 		if (entryField.isEnabled())
