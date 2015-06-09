@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,6 +165,18 @@ public class Window extends JFrame
 		entryField.setEnabled(false);
 		enterButton.setEnabled(false);
 		ansButton.setEnabled(false);
+		
+		entryField.addKeyListener(new KeyAdapter()
+		{
+			@Override
+			public void keyPressed(KeyEvent e)
+			{
+				if (e.getKeyCode() == KeyEvent.VK_ENTER)
+				{
+					Window.this.guess();
+				}
+			}
+		});
 	}
 
 	private void addAButton(JButton button)
