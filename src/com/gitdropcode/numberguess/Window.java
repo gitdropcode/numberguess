@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
+import javax.swing.text.AbstractDocument;
 
 public class Window extends JFrame
 {
@@ -92,11 +93,11 @@ public class Window extends JFrame
 		Font timerFont = timer.getFont();
 		timer.setFont(timerFont.deriveFont(Font.PLAIN, 96.0f));
 		timer.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-		
+
 		guessLab = new JLabel(" ");
 		Font guessFont = guessLab.getFont();
 		guessLab.setFont(guessFont.deriveFont(Font.PLAIN, 24.0f));
-	    guessLab.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+		guessLab.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
 		stats = new JPanel();
 		BoxLayout timerLayout = new BoxLayout(stats, BoxLayout.Y_AXIS);
@@ -132,6 +133,8 @@ public class Window extends JFrame
 		entryField.setMinimumSize(new Dimension(350, 200));
 		entryField.setPreferredSize(new Dimension(350, 200));
 		entryField.setMaximumSize(new Dimension(350, 200));
+		((AbstractDocument) entryField.getDocument())
+				.setDocumentFilter(new InputFilter());
 
 		entry = new JPanel();
 		BoxLayout entryLayout = new BoxLayout(entry, BoxLayout.X_AXIS);
@@ -233,6 +236,7 @@ public class Window extends JFrame
 		num = nums.toString();
 
 		entryField.setEnabled(true);
+		entryField.requestFocus();
 		entryField.setText("");
 		logArea.setText("");
 		guessLab.setText("Number of Guesses: 0");
@@ -304,6 +308,7 @@ public class Window extends JFrame
 				endGame();
 				return;
 			}
+			entryField.requestFocus();
 		}
 		else
 		{
