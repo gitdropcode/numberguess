@@ -93,7 +93,7 @@ public class Window extends JFrame
 
 		guessLab = new JLabel(" ");
 		Font guessFont = guessLab.getFont();
-		guessLab.setFont(guessFont.deriveFont(Font.PLAIN, 24.0f));
+		guessLab.setFont(guessFont.deriveFont(Font.PLAIN, 36.0f));
 		guessLab.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
 		stats = new JPanel();
@@ -146,7 +146,7 @@ public class Window extends JFrame
 		logArea.setEditable(false);
 		logArea.setFocusable(false);
 		Font logFont = logArea.getFont();
-		logArea.setFont(logFont.deriveFont(Font.PLAIN, 24.0f));
+		logArea.setFont(logFont.deriveFont(Font.PLAIN, 16.0f));
 		logArea.setOpaque(false);
 
 		logScroll = new JScrollPane(logArea);
